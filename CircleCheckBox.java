@@ -1,4 +1,4 @@
-package driverexam.autoshkolla.customviews;
+package com.arlinddev.customviews;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -11,7 +11,7 @@ import android.view.View;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import driverexam.autoshkolla.R;
+import com.arlinddev.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
