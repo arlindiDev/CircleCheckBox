@@ -180,7 +180,6 @@ public class CircleCheckBox extends View {
                     canvas.drawCircle(centerX - tick_offset - tick_third_, centerY, tickThickness, mPaintTick);
                     canvas.drawLine(centerX - tick_offset - tick_third_, centerY, tick_x - tick_offset, tick_y, mPaintTick);
                     canvas.drawCircle(tick_x - tick_offset, tick_y, tickThickness, mPaintTick);
-                    System.out.println("x " + tick_x + " y " + tick_y);
                 } else {
                     canvas.drawCircle(centerX - tick_offset - tick_third_, centerY, tickThickness, mPaintTick);
                     canvas.drawLine(centerX - tick_offset - tick_third_, centerY, tick_x - tick_offset, tick_y, mPaintTick);
@@ -205,7 +204,6 @@ public class CircleCheckBox extends View {
             }
         } else {
             if (!firstRun) {
-                System.out.println("HELLO " + current_radius + " " + inc);
 
                 current_radius = current_radius - inc;
                 canvas.drawCircle(centerX, centerY, current_radius, mPaintPageFill);
@@ -220,7 +218,6 @@ public class CircleCheckBox extends View {
                 canvas.drawCircle(centerX - tick_offset - tick_third_, centerY, tickThickness, mPaintTick);
                 canvas.drawLine(centerX - tick_offset - tick_third_, centerY, tick_x - tick_offset, tick_y, mPaintTick);
                 canvas.drawCircle(tick_x - tick_offset, tick_y, tickThickness, mPaintTick);
-                System.out.println("x " + tick_x + " y " + tick_y);
 
                 tick_x_two = tick_x + (tick_third_ * 1.7f);
                 tick_y_two = tick_y - (tick_third_ * 1.7f);
