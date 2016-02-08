@@ -4,7 +4,7 @@ CircleCheckBox is an Android custom view, that simply animates the check.
 ![](https://media.giphy.com/media/Cq47G7jNXaGk/giphy.gif)
 Download
 --------
-For now you'll have to manually add the CircleCheckBox to your android project, until I add the library to JCenter.
+For now you'll have to manually add the CircleCheckBox.java and ccb_attrs.xml files to your android project, until I add the library to JCenter.
 
 How to use CircleCheckBox?
 --------
