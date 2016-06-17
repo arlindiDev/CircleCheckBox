@@ -94,7 +94,7 @@ This library is licensed under the [The MIT License (MIT)](https://opensource.or
 ```
   <tabTrigger>readme</tabTrigger>
   
-  License
+  Issues
 --------
 - Change the Timer to a Handler because of OutOfMemoryException
 - Add multiline text
