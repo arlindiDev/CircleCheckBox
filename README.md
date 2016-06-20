@@ -6,6 +6,7 @@ Download
 --------
 For now you'll have to manually add the CircleCheckBox.java and ccb_attrs.xml files to your android project, until I add the library to JCenter.
 
+
 How to use CircleCheckBox?
 --------
 
@@ -98,3 +99,7 @@ This library is licensed under the [The MIT License (MIT)](https://opensource.or
 --------
 - Change the Timer to a Handler because of OutOfMemoryException
 - Add multiline text
+
+
+
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-CircleCheckBox-green.svg?style=true)](https://android-arsenal.com/details/1/3746)
