@@ -12,7 +12,7 @@ How to use CircleCheckBox?
 
 XML
 --------
-```
+```xml
 <com.arlinddev.CircleCheckBox
     android:id="@+id/chbx"
     android:layout_width="match_parent"
@@ -34,7 +34,7 @@ XML
 ```
 JAVA
 --------
-```
+```java
 protected void onCreate(Bundle savedInstanceState) {
   super.onCreate(savedInstanceState);
   setContentView(R.layout.activity_main);
@@ -49,7 +49,7 @@ protected void onCreate(Bundle savedInstanceState) {
 ```
 Public methods
 --------
-```
+```java
 setTickColor(int);
 setTickColorHex(String);
 setTextColor(int);
