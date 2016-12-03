@@ -5,13 +5,11 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.view.View;
 
 import java.util.Timer;
-import java.util.TimerTask;
-
-import com.arlinddev.R;
 
 import static android.graphics.Paint.ANTI_ALIAS_FLAG;
 
@@ -91,7 +89,6 @@ public class CircleCheckBox extends View {
     }
 
     public void init(Context context, AttributeSet attrs) {
-
         if (attrs != null) {
             TypedArray a = context.getTheme().obtainStyledAttributes(
                     attrs,
@@ -144,24 +141,17 @@ public class CircleCheckBox extends View {
     float tick_y = 0;
     float tick_x_two = 0;
     float tick_y_two = 0;
-    float inc_tick = 0;
     // Interpolator interpolator = new BounceInterpolator();
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (centerX == 0) {
-            centerX = innerCircleRadius + outerCircleRadius + getPaddingLeft();
-        }
+        centerX = innerCircleRadius + outerCircleRadius + getPaddingLeft();
+
         centerY = getHeight() / 2;
 
         //float interpolation = Math.abs(interpolator.getInterpolation(time));
-
-        float inc = innerCircleRadius / (total_time / increment);
-
-        float time_inc = 1 / (total_time / increment);
-        time += time_inc;
 
         canvas.drawCircle(centerX, centerY, innerCircleRadius, mPaintPageStroke);
 
@@ -173,10 +163,7 @@ public class CircleCheckBox extends View {
                 }
                 canvas.drawCircle(centerX, centerY, innerCircleRadius, mPaintPageFill);
                 if (draw_tick_part_one) {
-                    inc_tick = tick_third_ / (total_time / increment);
 
-                    tick_x += inc_tick;
-                    tick_y += inc_tick;
                     canvas.drawCircle(centerX - tick_offset - tick_third_, centerY, tickThickness, mPaintTick);
                     canvas.drawLine(centerX - tick_offset - tick_third_, centerY, tick_x - tick_offset, tick_y, mPaintTick);
                     canvas.drawCircle(tick_x - tick_offset, tick_y, tickThickness, mPaintTick);
@@ -185,18 +172,11 @@ public class CircleCheckBox extends View {
                     canvas.drawLine(centerX - tick_offset - tick_third_, centerY, tick_x - tick_offset, tick_y, mPaintTick);
                     canvas.drawCircle(tick_x - tick_offset, tick_y, tickThickness, mPaintTick);
 
-                    inc_tick = tick_third_ * 1.7f / (total_time / increment);
-
-                    tick_x_two += inc_tick;
-                    tick_y_two -= inc_tick;
-
                     canvas.drawLine(centerX - tick_offset, tick_y, tick_x_two - tick_offset, tick_y_two, mPaintTick);
                     canvas.drawCircle(tick_x_two - tick_offset, tick_y_two, tickThickness, mPaintTick);
                 }
 
             } else {
-                current_radius = current_radius + inc;
-
                 if (showOuterCircle && current_radius >= innerCircleRadius - outerCircleRadius) {
                     canvas.drawCircle(centerX, centerY, (current_radius + outerCircleRadius), mPaintOuter);
                 }
@@ -204,8 +184,6 @@ public class CircleCheckBox extends View {
             }
         } else {
             if (!firstRun) {
-
-                current_radius = current_radius - inc;
                 canvas.drawCircle(centerX, centerY, current_radius, mPaintPageFill);
             }
         }
@@ -227,8 +205,6 @@ public class CircleCheckBox extends View {
                 tick_y = 0;
                 tick_x_two = 0;
                 tick_x_two = 0;
-
-                current_radius = innerCircleRadius;
             }
         }
 
@@ -236,62 +212,77 @@ public class CircleCheckBox extends View {
         firstRun = false;
     }
 
+    Handler handler = new Handler();
+
     private void startAnimationTimer() {
-        timer.schedule(new TimerTask() {
+        this.post(new Runnable() {
+            @Override
+            public void run() {
+                runAnimation();
+            }
+        });
+    }
 
-            int time = 0;
-
+    private void runAnimation() {
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 timer_running = true;
                 time += increment;
-                if (time <= total_time) {
+                if (time < total_time) {
+
+                    float inc = innerCircleRadius / (total_time / increment);
+                    if (isChecked) {
+                        current_radius = current_radius + inc;
+                    } else {
+                        current_radius = current_radius - inc;
+                    }
                     postInvalidate();
+                    runAnimation();
                 } else {
                     if (isChecked) {
+                        time = 0;
                         startTickAnimation();
                     } else {
                         timer_running = false;
                     }
-                    cancel();
                 }
             }
-        }, 0, (int) increment);
+        }, (long) increment);
     }
 
     private void startTickAnimation() {
-        timer.schedule(new TimerTask() {
-
-            int time = 0;
-
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 draw_tick_part_one = true;
                 timer_running = true;
                 draw_tick = true;
+
                 if (time == 0) {
                     tick_x = centerX - tick_third_;
                     tick_y = centerY;
                 }
+                float inc_tick = tick_third_ / (total_time / increment);
+
+                tick_x += inc_tick;
+                tick_y += inc_tick;
 
                 time += increment;
                 if (time <= total_time) {
                     postInvalidate();
+                    startTickAnimation();
                 } else {
                     draw_tick_part_one = false;
+                    time = 0;
                     startTickPartTwoAnimation();
-                    cancel();
                 }
             }
-        }, 0, (int) increment);
+        }, (int) increment);
     }
 
     private void startTickPartTwoAnimation() {
-
-        timer.schedule(new TimerTask() {
-
-            int time = 0;
-
+        handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 timer_running = true;
@@ -301,16 +292,22 @@ public class CircleCheckBox extends View {
                     tick_y_two = tick_y;
                 }
 
+                float  inc_tick = tick_third_ * 1.7f / (total_time / increment);
+
+                tick_x_two += inc_tick;
+                tick_y_two -= inc_tick;
+
                 time += increment;
                 if (time <= total_time) {
                     postInvalidate();
+                    startTickPartTwoAnimation();
                 } else {
                     timer_running = false;
                     draw_tick = false;
-                    cancel();
+                    time = 0;
                 }
             }
-        }, 0, (int) increment);
+        }, (long) increment);
     }
 
     public int getTickColor() {
@@ -435,14 +432,16 @@ public class CircleCheckBox extends View {
     }
 
     public void setChecked(boolean isChecked) {
-
         if (!timer_running) {
             this.isChecked = isChecked;
             if (listener != null)
                 listener.onCheckedChanged(this, isChecked);
             if (isChecked) {
+                tick_x = 0;
+                tick_y = 0;
+                tick_x_two = 0;
+                tick_y_two = 0;
                 current_radius = 0;
-                inc_tick = 0;
             }
             time = 0;
             startAnimationTimer();
@@ -451,6 +450,12 @@ public class CircleCheckBox extends View {
 
     public void setOnCheckedChangeListener(OnCheckedChangeListener listener) {
         this.listener = listener;
+    }
+
+    int position;
+
+    public void setPosition(int position) {
+        this.position = position;
     }
 
     public interface OnCheckedChangeListener {
